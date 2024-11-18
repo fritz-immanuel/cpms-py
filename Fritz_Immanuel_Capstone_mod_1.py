@@ -44,7 +44,7 @@ def main():
   while True:
     os.system('cls')
     showMainMenu()
-    menuChoice = input("Enter your choice: ")
+    menuChoice = input("Enter your choice [1-3]: ")
     if menuChoice == "1":
       clientList()
     elif menuChoice == "2":
@@ -93,7 +93,7 @@ def clientList():
     print("4. Return to Main Menu")
     print("5. Exit the program")
 
-    clientListInput = input("What would you like to do? [1-4]:")
+    clientListInput = input("What would you like to do? [1-5]: ")
     if clientListInput == "1":
       addClient()
     elif clientListInput == "2":
@@ -349,7 +349,7 @@ def deleteClient():
 
 # Project
 
-def showProjectList(data = projectStorage):
+def showProjectList(data = projectStorage, status = -1):
   print("Project List")
   print("=======================================================================================================================================================")
   print("| No |  Code  | Client |              Name              |                  Description                  | Time Required | Project Value |    Status   |")
@@ -358,7 +358,10 @@ def showProjectList(data = projectStorage):
   if len(data) == 0:
     print("                                                                     - No Data -")
 
+
   for id, project in enumerate(data):
+    if status != -1 and data[project]['Status'] != status:
+      continue
     print(f"| {id+1:<2} | {project:<6} | {data[project]["Client"]:<6} | {data[project]['Name']:<30} | {data[project]['Description']:<45} | {data[project]['TimeRequired']:<13} | {data[project]['ProjectValue']:<13} | {projectStatuses[data[project]['Status']]:<10} |")
   print("=======================================================================================================================================================")
 
@@ -376,7 +379,7 @@ def projectList():
     print("4. Return to Main Menu")
     print("5. Exit the program")
 
-    projectListInput = input("What would you like to do? [1-4]: ")
+    projectListInput = input("What would you like to do? [1-5]: ")
     if projectListInput == "1":
       addProject()
     elif projectListInput == "2":
@@ -628,9 +631,11 @@ def deleteProject():
 
     print("1. Delete an existing Project by Project Code")
     print("2. Delete an existing Project by Client Code")
-    print("3. Return to Project Menu")
-    inputCreateMenu = input("What would you like to do? [1-2]:")
+    print("3. Delete an existing Project by Status")
+    print("4. Return to Project Menu")
+    inputCreateMenu = input("What would you like to do? [1-4]: ")
     if inputCreateMenu == "1":
+      os.system('cls')
       showProjectList()
 
       deleteProjectCode = ""
@@ -645,8 +650,8 @@ def deleteProject():
           print("Project code does not exists!")
 
 
-      saveDataConfirm = input("Do you want to save this project? [y/n]: ")
-      if saveDataConfirm.lower() == "y":
+      deleteDataConfirm = input("Do you want to delete this project? [y/n]: ")
+      if deleteDataConfirm.lower() == "y":
         del projectStorage[deleteProjectCode]
         print("Project deleted successfully!")
         input("Press 'Enter' to continue....")
@@ -655,6 +660,7 @@ def deleteProject():
         print("Project not deleted!")
         input("Press 'Enter' to return to Project List....")
     elif inputCreateMenu == "2":
+      os.system('cls')
       showProjectList()
 
       deleteProjectCode = []
@@ -663,7 +669,7 @@ def deleteProject():
         deleteClientCode = input("Enter the client code to delete [CLXXX][X = digit]: ")
         if not validateClientCode(deleteClientCode):
           print("Invalid client code!")
-        elif projectStorage.get(deleteClientCode):
+        elif clientStorage.get(deleteClientCode):
           for projectCode in projectStorage:
             if projectStorage[projectCode]["Client"] == deleteClientCode:
               deleteProjectCode.append(projectCode)
@@ -671,8 +677,8 @@ def deleteProject():
         else:
           print("Client code does not exists!")
 
-      saveDataConfirm = input("Do you want to save this project? [y/n]: ")
-      if saveDataConfirm.lower() == "y":
+      deleteDataConfirm = input("Do you want to delete this project? [y/n]: ")
+      if deleteDataConfirm.lower() == "y":
         for projectCode in deleteProjectCode:
           del projectStorage[projectCode]
         print("Project deleted successfully!")
@@ -682,6 +688,40 @@ def deleteProject():
         print("Project not deleted!")
         input("Press 'Enter' to return to Project List....")
     elif inputCreateMenu == "3":
+      os.system('cls')
+
+      while True:
+        print("Delete Project by Status")
+        print("1. Canceled")
+        print("2. In Progress")
+        print("3. Completed")
+        inputDeleteStatus = input("What status would you like to delete? [1-3]: ")
+        if inputDeleteStatus not in ["1","2","3"]:
+          input("Invalid input! Press 'Enter' to try again....")
+        else:
+          break
+
+      deleteProjectStatus = int(inputDeleteStatus)-1
+
+      showProjectList(status=deleteProjectStatus)
+
+      while True:
+        deleteStatusValidation = input("Are you sure you want to delete all projects with this status? [y/n]: ")
+        if deleteStatusValidation.lower() == "y":
+          for projectCode in list(projectStorage):
+            if projectStorage[projectCode]["Status"] == deleteProjectStatus:
+              del projectStorage[projectCode]
+          print("Project deleted successfully!")
+          input("Press 'Enter' to continue....")
+          break
+        elif deleteStatusValidation.lower() == "n":
+          input("Press 'Enter' to return to Project List....")
+          isNotExit = False
+          break
+        else:
+          input("Invalid input! Press 'Enter' to try again....")
+
+    elif inputCreateMenu == "4":
       break
     else:
       input("Invalid input! Press 'Enter' to try again....")
