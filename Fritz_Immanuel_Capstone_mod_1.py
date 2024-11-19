@@ -3,6 +3,8 @@ import os, re
 projectStatuses = ["Canceled", "In Progress", "Completed"]
 clientTypes = ["Individual", "Business"]
 
+clientFilter = {"ClientCode": "", "Type": -1}
+
 def validateClientCode(cc: str)->bool:
   pattern = r"^CL\d{3}$"
 
@@ -18,6 +20,7 @@ def validateProjectCode(cc: str)->bool:
     return True
 
   return False
+
 clientStorage = {
   "CL001": {
     "Name": "John Doe",
@@ -165,7 +168,7 @@ def showMainMenu():
 
 # Client
 
-def showClientList(data = clientStorage):
+def showClientList(data = clientStorage, filter = {"ClientCode": "", "Type": -1}):
   print("Client List")
   print("=================================================================================================================================================")
   print("| No |  Code  |          Name         |                 Address                 |     Phone Number     |           Email           |    Type    |")
@@ -175,6 +178,10 @@ def showClientList(data = clientStorage):
     print("                                                             - No Data -")
 
   for id, client in enumerate(data):
+    if filter["ClientCode"] != "" and filter["ClientCode"] != client:
+      continue
+    if filter["Type"] != -1 and int(filter["Type"]) != int(data[client]['Type']):
+      continue
     print(f"| {id+1:<2} | {client:<6} | {data[client]['Name']:<21} | {data[client]['Address']:<39} | {data[client]['PhoneNumber']:<20} | {data[client]['Email']:<25} | {clientTypes[data[client]['Type']]:<10} |")
   print("=================================================================================================================================================")
 
@@ -184,29 +191,87 @@ def clientList():
   while True:
     os.system('cls')
 
-    showClientList()
+    print("Client Menu")
+    print()
 
-    print("1. Add a new Client")
-    print("2. Edit an existing Client")
-    print("3. Delete an existing Client")
-    print("4. Return to Main Menu")
-    print("5. Exit the program")
+    print("1. Show Client")
+    print("2. Add a new Client")
+    print("3. Edit an existing Client")
+    print("4. Delete an existing Client")
+    print("5. Return to Main Menu")
+    print("6. Exit the program")
 
-    clientListInput = input("What would you like to do? [1-5]: ")
+    clientListInput = input("What would you like to do? [1-6]: ")
     if clientListInput == "1":
-      addClient()
+      showClient()
     elif clientListInput == "2":
-      editClient()
+      addClient()
     elif clientListInput == "3":
-      deleteClient()
+      editClient()
     elif clientListInput == "4":
-      break
+      deleteClient()
     elif clientListInput == "5":
+      break
+    elif clientListInput == "6":
       print("Shutting Down...")
       exit()
     else:
       print("Invalid input! Press 'Enter' to try again....")
       input()
+
+def showClient():
+  isNotExit = True
+
+  os.system('cls')
+
+  while isNotExit:
+    print("Show Client")
+    print()
+
+    print("1. Show all clients")
+    print("2. Show a client by code")
+    print("3. Show clients by type")
+    print("4. Return to Client Menu")
+    print("5. Exit the program")
+
+    clientShowInput = input("What would you like to do? [1-5]: ")
+    if clientShowInput == "1":
+      os.system('cls')
+      showClientList()
+    elif clientShowInput == "2":
+      os.system('cls')
+      while True:
+        clientCode = input("Enter the client code [CLXXX][X = digit]: ")
+        if not validateClientCode(clientCode):
+          print("Invalid client code!")
+        elif clientStorage.get(clientCode):
+          break
+        else:
+          print("Client code does not exists!")
+
+      clientFilter["ClientCode"] = clientCode
+      clientFilter["Type"] = -1
+      showClientList(filter=clientFilter)
+    elif clientShowInput == "3":
+      os.system('cls')
+      while True:
+        clientType = input("Enter the client type (0 = individual, 1 = business): ")
+        if clientType not in ["0", "1"]:
+          input("Invalid input! Press 'Enter' to try again....")
+        else:
+          break
+
+      clientFilter["ClientCode"] = ""
+      clientFilter["Type"] = clientType
+      showClientList(filter=clientFilter)
+    elif clientShowInput == "4":
+      isNotExit = False
+      break
+    elif clientShowInput == "5":
+      print("Shutting Down...")
+      exit()
+    else:
+      input("Invalid input! Press 'Enter' to try again....")
 
 def addClient():
   isNotExit = True
