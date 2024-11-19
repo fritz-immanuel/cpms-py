@@ -4,6 +4,7 @@ projectStatuses = ["Canceled", "In Progress", "Completed"]
 clientTypes = ["Individual", "Business"]
 
 clientFilter = {"ClientCode": "", "Type": -1}
+projectFilter = {"ClientCode": "", "Status": -1}
 
 def validateClientCode(cc: str)->bool:
   pattern = r"^CL\d{3}$"
@@ -168,7 +169,7 @@ def showMainMenu():
 
 # Client
 
-def showClientList(data = clientStorage, filter = {"ClientCode": "", "Type": -1}):
+def showClientList(data = clientStorage, filter={"ClientCode": "", "Type": -1}):
   print("Client List")
   print("=================================================================================================================================================")
   print("| No |  Code  |          Name         |                 Address                 |     Phone Number     |           Email           |    Type    |")
@@ -513,7 +514,7 @@ def deleteClient():
 
 # Project
 
-def showProjectList(data = projectStorage, status = -1):
+def showProjectList(data = projectStorage, filter={"ClientCode": "", "ProjectCode": "", "Status": -1}):
   print("Project List")
   print("========================================================================================================================================================")
   print("| No |  Code  | Client |              Name              |                  Description                  | Time Required | Project Value |     Status   |")
@@ -522,14 +523,89 @@ def showProjectList(data = projectStorage, status = -1):
   if len(data) == 0:
     print("                                                                      - No Data -")
 
-
   for id, project in enumerate(data):
-    if status != -1 and data[project]['Status'] != status:
+    if filter["ClientCode"] != "" and filter["ClientCode"] != data[project]["Client"]:
+      continue
+    if filter["ProjectCode"] != "" and filter["ProjectCode"] != project:
+      continue
+    if filter["Status"] != -1 and int(filter["Status"]) != int(data[project]['Status']):
       continue
     print(f"| {id+1:<2} | {project:<6} | {data[project]["Client"]:<6} | {data[project]['Name']:<30} | {data[project]['Description']:<45} | {data[project]['TimeRequired']:<13} | {data[project]['ProjectValue']:<13} | {projectStatuses[data[project]['Status']]:<12} |")
   print("========================================================================================================================================================")
 
   print()
+
+def showProject():
+  isNotExit = True
+
+  os.system('cls')
+
+  while isNotExit:
+    print("Show Project")
+    print()
+
+    print("1. Show all projects")
+    print("2. Show a project by code")
+    print("3. Show projects by client code")
+    print("4. Show projects by status")
+    print("5. Return to Project Menu")
+    print("6. Exit the program")
+
+    projectShowInput = input("What would you like to do? [1-5]: ")
+    if projectShowInput == "1":
+      os.system('cls')
+      showProjectList()
+    elif projectShowInput == "2":
+      os.system('cls')
+      while True:
+        projectCode = input("Enter the project code [PRXXX][X = digit]: ")
+        if not validateProjectCode(projectCode):
+          print("Invalid project code!")
+        elif projectStorage.get(projectCode):
+          break
+        else:
+          print("Project code does not exists!")
+
+      projectFilter["ClientCode"] = ""
+      projectFilter["ProjectCode"] = projectCode
+      projectFilter["Status"] = -1
+      showProjectList(filter=projectFilter)
+    elif projectShowInput == "3":
+      os.system('cls')
+      while True:
+        clientCode = input("Enter the client code [CLXXX][X = digit]: ")
+        if not validateClientCode(clientCode):
+          print("Invalid client code!")
+        elif clientStorage.get(clientCode):
+          break
+        else:
+          print("Client code does not exists!")
+
+      projectFilter["ClientCode"] = clientCode
+      projectFilter["ProjectCode"] = ""
+      projectFilter["Status"] = -1
+      showProjectList(filter=projectFilter)
+    elif projectShowInput == "4":
+      os.system('cls')
+      while True:
+        projectStatus = input("Enter the project status (0 = Canceled, 1 = In Progress, 2 = Completed): ")
+        if projectStatus not in ["0", "1", "2"]:
+          input("Invalid input! Press 'Enter' to try again....")
+        else:
+          break
+
+      projectFilter["ClientCode"] = ""
+      projectFilter["ProjectCode"] = ""
+      projectFilter["Status"] = projectStatus
+      showProjectList(filter=projectFilter)
+    elif projectShowInput == "5":
+      isNotExit = False
+      break
+    elif projectShowInput == "6":
+      print("Shutting Down...")
+      exit()
+    else:
+      input("Invalid input! Press 'Enter' to try again....")
 
 def projectList():
   while True:
@@ -537,22 +613,25 @@ def projectList():
 
     showProjectList()
 
-    print("1. Add a new Project")
-    print("2. Edit an existing Project")
-    print("3. Delete an existing Project")
-    print("4. Return to Main Menu")
-    print("5. Exit the program")
+    print("1. Show project")
+    print("2. Add a new Project")
+    print("3. Edit an existing Project")
+    print("4. Delete an existing Project")
+    print("5. Return to Main Menu")
+    print("6. Exit the program")
 
-    projectListInput = input("What would you like to do? [1-5]: ")
+    projectListInput = input("What would you like to do? [1-6]: ")
     if projectListInput == "1":
-      addProject()
+      showProject()
     elif projectListInput == "2":
-      editProject()
+      addProject()
     elif projectListInput == "3":
-      deleteProject()
+      editProject()
     elif projectListInput == "4":
-      break
+      deleteProject()
     elif projectListInput == "5":
+      break
+    elif projectListInput == "6":
       print("Shutting Down...")
       exit()
     else:
