@@ -18,7 +18,6 @@ def validateProjectCode(cc: str)->bool:
     return True
 
   return False
-
 clientStorage = {
   "CL001": {
     "Name": "John Doe",
@@ -27,16 +26,116 @@ clientStorage = {
     "Email": "johndoe@example.com",
     "Type": 0,
   },
+  "CL002": {
+    "Name": "Jane Smith",
+    "Address": "456 Elm Street, Los Angeles, CA 90001",
+    "PhoneNumber": "(987) 654-3210",
+    "Email": "janesmith@example.com",
+    "Type": 1,
+  },
+  "CL003": {
+    "Name": "Michael Brown",
+    "Address": "789 Pine Street, Chicago, IL 60601",
+    "PhoneNumber": "(555) 123-4567",
+    "Email": "michaelbrown@example.com",
+    "Type": 0,
+  },
+  "CL004": {
+    "Name": "Emily Davis",
+    "Address": "321 Oak Avenue, Houston, TX 77001",
+    "PhoneNumber": "(444) 987-6543",
+    "Email": "emilydavis@example.com",
+    "Type": 1,
+  },
+  "CL005": {
+    "Name": "David Wilson",
+    "Address": "654 Maple Street, Miami, FL 33101",
+    "PhoneNumber": "(333) 222-1111",
+    "Email": "davidwilson@example.com",
+    "Type": 0,
+  },
 }
 
 projectStorage = {
   "PR001": {
-    "Name": "Project 1",
+    "Name": "Project Alpha",
     "Description": "A simple web app for managing clients",
     "TimeRequired": "4 hours",
     "ProjectValue": "$1000",
     "Client": "CL001",
     "Status": 1,
+  },
+  "PR002": {
+    "Name": "Project Beta",
+    "Description": "An e-commerce platform for handmade goods",
+    "TimeRequired": "20 hours",
+    "ProjectValue": "$5000",
+    "Client": "CL002",
+    "Status": 2,
+  },
+  "PR003": {
+    "Name": "Project Gamma",
+    "Description": "A marketing automation tool for businesses",
+    "TimeRequired": "15 hours",
+    "ProjectValue": "$3000",
+    "Client": "CL003",
+    "Status": 0,
+  },
+  "PR004": {
+    "Name": "Project Delta",
+    "Description": "A personal blog website with custom design",
+    "TimeRequired": "10 hours",
+    "ProjectValue": "$2000",
+    "Client": "CL004",
+    "Status": 1,
+  },
+  "PR005": {
+    "Name": "Project Epsilon",
+    "Description": "A mobile app for tracking fitness activities",
+    "TimeRequired": "30 hours",
+    "ProjectValue": "$8000",
+    "Client": "CL005",
+    "Status": 1,
+  },
+  "PR006": {
+    "Name": "Project Zeta",
+    "Description": "A custom CRM for small businesses",
+    "TimeRequired": "25 hours",
+    "ProjectValue": "$6000",
+    "Client": "CL001",
+    "Status": 2,
+  },
+  "PR007": {
+    "Name": "Project Eta",
+    "Description": "A social media analytics dashboard",
+    "TimeRequired": "12 hours",
+    "ProjectValue": "$4000",
+    "Client": "CL002",
+    "Status": 0,
+  },
+  "PR008": {
+    "Name": "Project Theta",
+    "Description": "An online booking system for salons",
+    "TimeRequired": "8 hours",
+    "ProjectValue": "$2500",
+    "Client": "CL003",
+    "Status": 1,
+  },
+  "PR009": {
+    "Name": "Project Iota",
+    "Description": "A portfolio website for freelancers",
+    "TimeRequired": "6 hours",
+    "ProjectValue": "$1500",
+    "Client": "CL004",
+    "Status": 2,
+  },
+  "PR010": {
+    "Name": "Project Kappa",
+    "Description": "A loyalty program app for retail stores",
+    "TimeRequired": "18 hours",
+    "ProjectValue": "$7000",
+    "Client": "CL005",
+    "Status": 0,
   },
 }
 
@@ -351,19 +450,19 @@ def deleteClient():
 
 def showProjectList(data = projectStorage, status = -1):
   print("Project List")
-  print("=======================================================================================================================================================")
-  print("| No |  Code  | Client |              Name              |                  Description                  | Time Required | Project Value |    Status   |")
-  print("=======================================================================================================================================================")
+  print("========================================================================================================================================================")
+  print("| No |  Code  | Client |              Name              |                  Description                  | Time Required | Project Value |     Status   |")
+  print("========================================================================================================================================================")
 
   if len(data) == 0:
-    print("                                                                     - No Data -")
+    print("                                                                      - No Data -")
 
 
   for id, project in enumerate(data):
     if status != -1 and data[project]['Status'] != status:
       continue
-    print(f"| {id+1:<2} | {project:<6} | {data[project]["Client"]:<6} | {data[project]['Name']:<30} | {data[project]['Description']:<45} | {data[project]['TimeRequired']:<13} | {data[project]['ProjectValue']:<13} | {projectStatuses[data[project]['Status']]:<10} |")
-  print("=======================================================================================================================================================")
+    print(f"| {id+1:<2} | {project:<6} | {data[project]["Client"]:<6} | {data[project]['Name']:<30} | {data[project]['Description']:<45} | {data[project]['TimeRequired']:<13} | {data[project]['ProjectValue']:<13} | {projectStatuses[data[project]['Status']]:<12} |")
+  print("========================================================================================================================================================")
 
   print()
 
